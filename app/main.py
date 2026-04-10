@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from app.database import engine, Base
 from app.models import user, story, chapter, branch
 from app.routers import users, stories, chapters, branches, auth
@@ -9,6 +10,14 @@ from app.routers import users, stories, chapters, branches, auth
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="InkFlow API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(auth.router)
 app.include_router(users.router)
