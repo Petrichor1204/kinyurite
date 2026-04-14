@@ -29,7 +29,7 @@ class ChapterBranch(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     body = Column(Text, nullable=False)
-    status = Column(Enum(BranchStatus), nullable=False, default=BranchStatus.DRAFT)
+    status = Column(Enum(BranchStatus, values_callable=lambda x: [e.value for e in x]), nullable=False, default=BranchStatus.DRAFT)
     feedback = Column(Text, nullable=True)
     chapter_id = Column(UUID(as_uuid=True), ForeignKey("chapters.id"), nullable=False)
     contributor_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
