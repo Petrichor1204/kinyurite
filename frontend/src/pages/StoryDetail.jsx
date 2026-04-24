@@ -186,6 +186,22 @@ function StoryDetail() {
                                             <span className="text-ink-300 text-sm ml-4 mt-1">→</span>
                                         )}
                                     </div>
+                                    {isLeadAuthor && isOwner && (
+                                        <div className="mt-3 flex justify-end">
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                onClick={(e) => {
+                                                    e.stopPropagation()
+                                                    navigate(`/stories/${storyId}/chapters/${chapter.id}/edit`, {
+                                                        state: { chapter, storyId }
+                                                    })
+                                                }}
+                                            >
+                                                Edit chapter
+                                            </Button>
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
                         ))}

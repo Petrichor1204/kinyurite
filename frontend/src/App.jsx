@@ -6,6 +6,7 @@ import StoryDetail from "./pages/StoryDetail"
 import BranchEditor from "./pages/BranchEditor"
 import ReviewDashboard from "./pages/ReviewDashboard"
 import ContributorDashboard from "./pages/ContributorDashboard"
+import ChapterEditor from "./pages/ChapterEditor"
 
 function ProtectedRoute({ children }) {
     const token = localStorage.getItem("token")
@@ -37,6 +38,11 @@ function App() {
                 <Route path="/review" element={
                     <ProtectedRoute>
                         <ReviewDashboard />
+                    </ProtectedRoute>
+                } />
+                <Route path="/stories/:storyId/chapters/:chapterId/edit" element={
+                    <ProtectedRoute>
+                        <ChapterEditor />
                     </ProtectedRoute>
                 } />
                 <Route path="/" element={<Navigate to="/stories" />} />

@@ -13,6 +13,7 @@ function Register() {
         password: "",
         role: "contributor"
     })
+    const [showPassword, setShowPassword] = useState(false)
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
@@ -79,15 +80,24 @@ function Register() {
                             </div>
                             <div className="space-y-1.5">
                                 <Label htmlFor="password">Password</Label>
-                                <Input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    value={form.password}
-                                    onChange={handleChange}
-                                    placeholder="••••••••"
-                                    required
-                                />
+                                <div className="relative">
+                                    <Input
+                                        id="password"
+                                        name="password"
+                                        type={showPassword ? "text" : "password"}
+                                        value={form.password}
+                                        onChange={handleChange}
+                                        placeholder="••••••••"
+                                        required
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400 hover:text-ink-600 text-xs"
+                                    >
+                                        {showPassword ? "hide" : "show"}
+                                    </button>
+                                </div>
                             </div>
                             <div className="space-y-1.5">
                                 <Label htmlFor="role">I want to</Label>
