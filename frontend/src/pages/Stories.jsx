@@ -59,7 +59,7 @@ function Stories() {
 
             <main className="ml-56 flex-1 p-8">
                 <div className="max-w-4xl mx-auto">
-                    <div className="flex justify-between items-center mb-8">
+                    <header className="flex justify-between items-center mb-8">
                         <div>
                             <h2 className="font-heading text-3xl text-ink-900">
                                 Welcome back, {currentUser?.username} 👋
@@ -76,7 +76,7 @@ function Stories() {
                                 {showCreateForm ? "Cancel" : "+ New story"}
                             </button>
                         )}
-                    </div>
+                    </header>
 
                     {showCreateForm && (
                         <div className="bg-white rounded-2xl border border-ink-200 p-6 mb-8 shadow-card">
@@ -127,12 +127,12 @@ function Stories() {
                         </div>
                     )}
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 place-items-center">
                         {stories.map(story => (
                             <div
                                 key={story.id}
                                 onClick={() => navigate(`/stories/${story.id}`)}
-                                className="bg-white rounded-2xl border border-ink-200 p-5 cursor-pointer shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all"
+                                className="bg-white rounded-2xl border border-ink-200 p-5 cursor-pointer shadow-card hover:shadow-card-hover hover:-translate-y-2 transition-all duration-200 w-full max-w-sm min-h-[200px] flex flex-col"
                             >
                                 <div className="flex items-start justify-between mb-3">
                                     <div className="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
@@ -144,12 +144,14 @@ function Stories() {
                                         </span>
                                     )}
                                 </div>
-                                <h3 className="font-heading text-lg text-ink-900 mb-1">{story.title}</h3>
-                                {story.description && (
-                                    <p className="text-ink-400 text-sm leading-relaxed line-clamp-2">
-                                        {story.description}
-                                    </p>
-                                )}
+                                <h3 className="font-heading text-lg text-ink-900 mb-2">{story.title}</h3>
+                                <div className="flex-1">
+                                    {story.description && (
+                                        <p className="text-ink-400 text-sm leading-relaxed line-clamp-3">
+                                            {story.description}
+                                        </p>
+                                    )}
+                                </div>
                                 <div className="mt-4 flex items-center justify-between">
                                     <span className="text-xs text-ink-300">
                                         {new Date(story.created_at).toLocaleDateString()}

@@ -23,36 +23,38 @@ function Sidebar({ currentUser, onLogout }) {
                 <h1 className="font-heading text-white text-xl font-semibold italic">Kinyurite</h1>
             </div>
 
-            {currentUser && (
-                <div className="px-5 py-4 border-b border-primary-700">
-                    <div className="w-10 h-10 rounded-2xl bg-accent-400 flex items-center justify-center mb-2">
-                        <span className="text-primary-900 font-bold text-sm">
-                            {currentUser.username.slice(0, 2).toUpperCase()}
-                        </span>
+            <div className="flex-1 flex flex-col justify-center">
+                {currentUser && (
+                    <div className="px-5 py-4">
+                        <div className="w-10 h-10 rounded-2xl bg-accent-400 flex items-center justify-center mb-2">
+                            <span className="text-primary-900 font-bold text-sm">
+                                {currentUser.username.slice(0, 2).toUpperCase()}
+                            </span>
+                        </div>
+                        <p className="text-white text-sm font-medium">{currentUser.username}</p>
+                        <p className="text-primary-200 text-xs mt-0.5">
+                            {currentUser.role === "lead_author" ? "Lead Author" : "Contributor"}
+                        </p>
                     </div>
-                    <p className="text-white text-sm font-medium">{currentUser.username}</p>
-                    <p className="text-primary-200 text-xs mt-0.5">
-                        {currentUser.role === "lead_author" ? "Lead Author" : "Contributor"}
-                    </p>
-                </div>
-            )}
+                )}
 
-            <nav className="flex-1 px-3 py-4 space-y-1">
-                {nav.map(item => (
-                    <button
-                        key={item.label}
-                        onClick={() => navigate(item.path)}
-                        className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-medium transition-all ${
-                            location.pathname === item.path
-                                ? "bg-white text-primary-600"
-                                : "text-primary-100 hover:bg-primary-700"
-                        }`}
-                    >
-                        <span className="text-base">{item.icon}</span>
-                        {item.label}
-                    </button>
-                ))}
-            </nav>
+                <nav className="px-3 py-4 space-y-1">
+                    {nav.map(item => (
+                        <button
+                            key={item.label}
+                            onClick={() => navigate(item.path)}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-medium transition-all ${
+                                location.pathname === item.path
+                                    ? "bg-white text-primary-600"
+                                    : "text-primary-100 hover:bg-primary-700"
+                            }`}
+                        >
+                            <span className="text-base">{item.icon}</span>
+                            {item.label}
+                        </button>
+                    ))}
+                </nav>
+            </div>
 
             <div className="px-3 py-4 border-t border-primary-700">
                 <button
