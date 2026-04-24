@@ -3,9 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
+import Sidebar from "../components/Sidebar"
 import client from "../api/client"
 
 function Stories() {
@@ -51,63 +49,38 @@ function Stories() {
 
     if (loading) return (
         <div className="min-h-screen bg-ink-50 flex items-center justify-center">
-            <p className="text-ink-400 text-sm">Loading stories...</p>
+            <p className="text-ink-400 text-sm">Loading...</p>
         </div>
     )
 
     return (
-        <div className="min-h-screen bg-ink-50">
-            <nav className="border-b border-ink-200 bg-white px-6 py-4">
-                <div className="max-w-4xl mx-auto flex justify-between items-center">
-                    <h1 className="font-heading text-2xl font-semibold text-ink-900">Kinyurite</h1>
-                    <div className="flex items-center gap-3">
-                        {currentUser && (
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm text-ink-500">{currentUser.username}</span>
-                                <Badge variant="outline" className="text-xs">
-                                    {currentUser.role === "lead_author" ? "Lead Author" : "Contributor"}
-                                </Badge>
-                            </div>
-                        )}
+        <div className="min-h-screen bg-ink-50 flex">
+            <Sidebar currentUser={currentUser} onLogout={handleLogout} />
+
+            <main className="ml-56 flex-1 p-8">
+                <div className="max-w-4xl mx-auto">
+                    <div className="flex justify-between items-center mb-8">
+                        <div>
+                            <h2 className="font-heading text-3xl text-ink-900">
+                                Welcome back, {currentUser?.username} 👋
+                            </h2>
+                            <p className="text-ink-400 text-sm mt-1">
+                                {stories.length} {stories.length === 1 ? "story" : "stories"} available
+                            </p>
+                        </div>
                         {currentUser?.role === "lead_author" && (
-                            <Button variant="outline" size="sm" onClick={() => navigate("/review")}>
-                                Review dashboard
-                            </Button>
+                            <button
+                                onClick={() => setShowCreateForm(!showCreateForm)}
+                                className="bg-accent-400 hover:bg-accent-500 text-primary-900 font-semibold px-6 py-3 rounded-2xl text-sm transition-all hover:scale-105 active:scale-95 shadow-sm"
+                            >
+                                {showCreateForm ? "Cancel" : "+ New story"}
+                            </button>
                         )}
-                        {currentUser?.role === "contributor" && (
-                            <Button variant="outline" size="sm" onClick={() => navigate("/my-branches")}>
-                                My branches
-                            </Button>
-                        )}
-                        <Button variant="ghost" size="sm" onClick={handleLogout}>
-                            Sign out
-                        </Button>
                     </div>
-                </div>
-            </nav>
 
-            <main className="max-w-4xl mx-auto px-6 py-10">
-                <div className="flex justify-between items-center mb-8">
-                    <div>
-                        <h2 className="font-heading text-3xl text-ink-900">Stories</h2>
-                        <p className="text-ink-400 text-sm mt-1">
-                            {stories.length} {stories.length === 1 ? "story" : "stories"} available
-                        </p>
-                    </div>
-                    {currentUser?.role === "lead_author" && (
-                        <Button onClick={() => setShowCreateForm(!showCreateForm)}>
-                            {showCreateForm ? "Cancel" : "+ New story"}
-                        </Button>
-                    )}
-                </div>
-
-                {showCreateForm && (
-                    <Card className="mb-8 border-ink-200">
-                        <CardHeader>
-                            <CardTitle className="font-heading text-lg">New story</CardTitle>
-                            <CardDescription>Start a new collaborative narrative.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
+                    {showCreateForm && (
+                        <div className="bg-white rounded-2xl border border-ink-200 p-6 mb-8 shadow-card">
+                            <h3 className="font-heading text-lg text-ink-900 mb-4">New story</h3>
                             <form onSubmit={handleCreateStory} className="space-y-4">
                                 <div className="space-y-1.5">
                                     <Label>Title</Label>
@@ -118,63 +91,76 @@ function Stories() {
                                         required
                                     />
                                 </div>
-                                <div className="space-y-1.5">
-                                    <Label>Genre</Label>
-                                    <Input
-                                        value={newStory.genre}
-                                        onChange={e => setNewStory({ ...newStory, genre: e.target.value })}
-                                        placeholder="Sci-fi, Fantasy, Literary Fiction..."
-                                    />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-1.5">
+                                        <Label>Genre</Label>
+                                        <Input
+                                            value={newStory.genre}
+                                            onChange={e => setNewStory({ ...newStory, genre: e.target.value })}
+                                            placeholder="Sci-fi, Fantasy..."
+                                        />
+                                    </div>
                                 </div>
                                 <div className="space-y-1.5">
                                     <Label>Description</Label>
                                     <textarea
                                         value={newStory.description}
                                         onChange={e => setNewStory({ ...newStory, description: e.target.value })}
-                                        placeholder="A short description of your story..."
-                                        className="w-full min-h-[80px] px-3 py-2 rounded-md border border-input bg-background text-sm resize-none focus:outline-none focus:ring-2 focus:ring-ring"
+                                        placeholder="A short description..."
+                                        className="w-full min-h-[80px] px-4 py-3 rounded-2xl border border-ink-300 bg-ink-50 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-primary-400"
                                     />
                                 </div>
-                                <Button type="submit">Create story</Button>
+                                <button
+                                    type="submit"
+                                    className="bg-primary-600 hover:bg-primary-700 text-white font-medium px-6 py-3 rounded-2xl text-sm transition-all hover:scale-105 active:scale-95 shadow-sm"
+                                >
+                                    Create story
+                                </button>
                             </form>
-                        </CardContent>
-                    </Card>
-                )}
+                        </div>
+                    )}
 
-                {stories.length === 0 && (
-                    <div className="text-center py-20">
-                        <p className="font-heading text-xl text-ink-400">No stories yet.</p>
-                        <p className="text-ink-300 text-sm mt-2">Be the first to start one.</p>
-                    </div>
-                )}
+                    {stories.length === 0 && (
+                        <div className="text-center py-20">
+                            <p className="font-heading text-xl text-ink-400">No stories yet.</p>
+                            <p className="text-ink-300 text-sm mt-2">Be the first to start one.</p>
+                        </div>
+                    )}
 
-                <div className="space-y-4">
-                    {stories.map(story => (
-                        <Card
-                            key={story.id}
-                            onClick={() => navigate(`/stories/${story.id}`)}
-                            className="border-ink-200 hover:border-ink-400 hover:shadow-sm transition-all cursor-pointer"
-                        >
-                            <CardContent className="pt-6">
-                                <div className="flex justify-between items-start">
-                                    <div className="flex-1">
-                                        <h3 className="font-heading text-xl text-ink-900 mb-1">{story.title}</h3>
-                                        {story.genre && (
-                                            <Badge variant="secondary" className="text-xs mb-2">
-                                                {story.genre}
-                                            </Badge>
-                                        )}
-                                        {story.description && (
-                                            <p className="text-ink-500 text-sm leading-relaxed">
-                                                {story.description}
-                                            </p>
-                                        )}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {stories.map(story => (
+                            <div
+                                key={story.id}
+                                onClick={() => navigate(`/stories/${story.id}`)}
+                                className="bg-white rounded-2xl border border-ink-200 p-5 cursor-pointer shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all"
+                            >
+                                <div className="flex items-start justify-between mb-3">
+                                    <div className="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center">
+                                        <span className="text-primary-600 text-lg">📖</span>
                                     </div>
-                                    <span className="text-ink-300 text-sm ml-4">→</span>
+                                    {story.genre && (
+                                        <span className="text-xs bg-accent-100 text-accent-600 px-2.5 py-1 rounded-full font-medium">
+                                            {story.genre}
+                                        </span>
+                                    )}
                                 </div>
-                            </CardContent>
-                        </Card>
-                    ))}
+                                <h3 className="font-heading text-lg text-ink-900 mb-1">{story.title}</h3>
+                                {story.description && (
+                                    <p className="text-ink-400 text-sm leading-relaxed line-clamp-2">
+                                        {story.description}
+                                    </p>
+                                )}
+                                <div className="mt-4 flex items-center justify-between">
+                                    <span className="text-xs text-ink-300">
+                                        {new Date(story.created_at).toLocaleDateString()}
+                                    </span>
+                                    <span className="text-primary-600 text-sm font-medium">
+                                        Read more →
+                                    </span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </main>
         </div>

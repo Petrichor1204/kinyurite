@@ -7,6 +7,7 @@ from app.database import get_db
 from app.models.user import User
 import os
 import bcrypt
+import uuid
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
@@ -15,7 +16,7 @@ ALGORITHM = "HS256"
 # in a refresh_tokens table and used to issue new access tokens
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-oauth2_scheme = HTTPBearer()
+oauth2_scheme = HTTPBearer(auto_error=False)
 
 
 def hash_password(password: str) -> str:
@@ -31,11 +32,18 @@ def create_access_token(data: dict) -> str:
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
 def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+    if credentials is None:
+        raise HTTPException(status_code=403, detail="Not authenticated")
+
     token = credentials.credentials
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: str = payload.get("sub")
         if user_id is None:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        try:
+            user_id = uuid.UUID(user_id)
+        except (ValueError, TypeError):
             raise HTTPException(status_code=401, detail="Invalid token")
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
