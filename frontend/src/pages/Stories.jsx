@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Sidebar from "../components/Sidebar"
+import Navbar from "../components/Navbar"
 import client from "../api/client"
 
 function Stories() {
@@ -12,6 +13,8 @@ function Stories() {
     const [currentUser, setCurrentUser] = useState(null)
     const [showCreateForm, setShowCreateForm] = useState(false)
     const [newStory, setNewStory] = useState({ title: "", description: "", genre: "" })
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+    const [sidebarHidden, setSidebarHidden] = useState(true)
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -55,9 +58,17 @@ function Stories() {
 
     return (
         <div className="min-h-screen bg-ink-50 flex">
-            <Sidebar currentUser={currentUser} onLogout={handleLogout} />
+            <Sidebar
+                currentUser={currentUser}
+                onLogout={handleLogout}
+                collapsed={sidebarCollapsed}
+                hidden={sidebarHidden}
+                onToggleCollapse={() => setSidebarCollapsed(prev => !prev)}
+                onClose={() => setSidebarHidden(true)}
+            />
+            <Navbar currentUser={currentUser} onToggleSidebar={() => setSidebarHidden(false)} />
 
-            <main className="ml-56 flex-1 p-8">
+            <main className={`${sidebarCollapsed ? "md:ml-20" : "md:ml-56"} ml-0 flex-1 p-8 pt-20 md:pt-0 transition-all duration-300`}>
                 <div className="max-w-4xl mx-auto">
                     <header className="flex justify-between items-center mb-8">
                         <div>
