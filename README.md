@@ -182,3 +182,14 @@ python -m pytest -q
 - `diff-match-patch`
 
 For the full dependency list, see `requirements.txt` and `frontend/package.json`.
+
+### Screenshots
+
+**Lead Author View**
+![alt text](<Screenshot 2026-05-30 at 6.22.21 PM.png>)
+![alt text](<Screenshot 2026-05-30 at 6.22.32 PM.png>)
+![alt text](image.png)
+
+**Contributer View**
+![alt text](<Screenshot 2026-05-30 at 6.23.24 PM.png>)
+![alt text](<Screenshot 2026-05-30 at 6.23.38 PM.png>)
