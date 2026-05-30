@@ -12,10 +12,17 @@ const NAV_CONTRIBUTOR = [
   { label: "My Branches",     path: "/my-branches", icon: "✦" },
 ]
 
+const NAV_GUEST = [
+  { label: "Explore Stories", path: "/stories", icon: "🌍" },
+  { label: "Log in",          path: "/login",   icon: "→" },
+]
+
 function Navbar({ currentUser, onToggleSidebar }) {
   const navigate  = useNavigate()
   const location  = useLocation()
-  const nav       = currentUser?.role === "lead_author" ? NAV_LEAD_AUTHOR : NAV_CONTRIBUTOR
+  const nav       = !currentUser
+    ? NAV_GUEST
+    : currentUser.role === "lead_author" ? NAV_LEAD_AUTHOR : NAV_CONTRIBUTOR
 
   return (
     <div className="md:hidden fixed top-0 left-0 right-0 z-20 bg-white border-b border-ink-200 shadow-sm">

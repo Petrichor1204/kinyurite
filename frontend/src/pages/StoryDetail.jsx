@@ -19,12 +19,20 @@ function StoryDetail() {
     const [newChapter, setNewChapter] = useState({ title: "", body: "", order: 1 })
 
     useEffect(() => {
+        // Auth is optional — guests can read stories without logging in.
+        const userPromise = localStorage.getItem("token")
+            ? client.get("/auth/me").then(res => res.data).catch(() => {
+                localStorage.removeItem("token")
+                return null
+            })
+            : Promise.resolve(null)
+
         Promise.all([
-            client.get("/auth/me"),
+            userPromise,
             client.get(`/stories/${storyId}`),
             client.get(`/stories/${storyId}/chapters/`)
-        ]).then(([userRes, storyRes, chaptersRes]) => {
-            setCurrentUser(userRes.data)
+        ]).then(([user, storyRes, chaptersRes]) => {
+            setCurrentUser(user)
             setStory(storyRes.data)
             setChapters(chaptersRes.data)
             setLoading(false)
@@ -57,9 +65,16 @@ function StoryDetail() {
             <nav className="border-b border-ink-200 bg-white px-6 py-4">
                 <div className="max-w-4xl mx-auto flex justify-between items-center">
                     <h1 className="font-heading text-2xl font-semibold text-ink-900">Kinyurite</h1>
-                    <Button variant="ghost" size="sm" onClick={() => navigate("/stories")}>
-                        ← Back to stories
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="sm" onClick={() => navigate("/stories")}>
+                            ← Back to stories
+                        </Button>
+                        {!currentUser && (
+                            <Button size="sm" onClick={() => navigate("/login")}>
+                                Log in
+                            </Button>
+                        )}
+                    </div>
                 </div>
             </nav>
 

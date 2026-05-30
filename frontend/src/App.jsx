@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import Landing from "./pages/Landing"
 import Login from "./pages/Login"
 import Register from "./pages/Register"
 import Stories from "./pages/Stories"
@@ -18,18 +19,11 @@ function App() {
     return (
         <BrowserRouter>
             <Routes>
+                <Route path="/" element={<Landing />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/stories" element={
-                    <ProtectedRoute>
-                        <Stories />
-                    </ProtectedRoute>
-                } />
-                <Route path="/stories/:storyId" element={
-                    <ProtectedRoute>
-                        <StoryDetail />
-                    </ProtectedRoute>
-                } />
+                <Route path="/stories" element={<Stories />} />
+                <Route path="/stories/:storyId" element={<StoryDetail />} />
                 <Route path="/chapters/:chapterId/branch" element={
                     <ProtectedRoute>
                         <BranchEditor />
@@ -45,7 +39,6 @@ function App() {
                         <ChapterEditor />
                     </ProtectedRoute>
                 } />
-                <Route path="/" element={<Navigate to="/stories" />} />
                 <Route path="/my-branches" element={
                     <ProtectedRoute>
                         <ContributorDashboard />

@@ -12,10 +12,17 @@ const NAV_CONTRIBUTOR = [
   { label: "My Branches",    path: "/my-branches", icon: "✦" },
 ]
 
+const NAV_GUEST = [
+  { label: "Explore Stories", path: "/stories", icon: "🌍" },
+]
+
 function Sidebar({ currentUser, onLogout, collapsed, hidden, onToggleCollapse, onClose }) {
   const navigate  = useNavigate()
   const location  = useLocation()
-  const nav       = currentUser?.role === "lead_author" ? NAV_LEAD_AUTHOR : NAV_CONTRIBUTOR
+  const isGuest   = !currentUser
+  const nav       = isGuest
+    ? NAV_GUEST
+    : currentUser.role === "lead_author" ? NAV_LEAD_AUTHOR : NAV_CONTRIBUTOR
   const sidebarClasses = hidden ? "-translate-x-full md:translate-x-0" : "translate-x-0"
   const widthClasses   = collapsed ? "w-20" : "w-60"
 
@@ -40,7 +47,7 @@ function Sidebar({ currentUser, onLogout, collapsed, hidden, onToggleCollapse, o
               ${collapsed ? "w-11 h-11" : "w-9 h-9"}
             `}
           >
-            {currentUser?.username.slice(0, 2).toUpperCase()}
+            {isGuest ? "G" : currentUser.username.slice(0, 2).toUpperCase()}
           </div>
 
           {/* Brand + user info */}
@@ -50,7 +57,7 @@ function Sidebar({ currentUser, onLogout, collapsed, hidden, onToggleCollapse, o
                 Kinyurite
               </h1>
               <p className="text-primary-300 text-xs truncate mt-0.5">
-                {currentUser?.username}
+                {isGuest ? "Guest" : currentUser.username}
               </p>
             </div>
           )}
@@ -76,10 +83,10 @@ function Sidebar({ currentUser, onLogout, collapsed, hidden, onToggleCollapse, o
       </div>
 
       {/* ── Role badge (expanded only) ── */}
-      {!collapsed && currentUser && (
+      {!collapsed && (
         <div className="px-4 pt-4 pb-1">
           <span className="inline-block text-[10px] font-semibold tracking-widest uppercase text-primary-300 bg-primary-700/40 px-2.5 py-1 rounded-full">
-            {currentUser.role === "lead_author" ? "Lead Author" : "Contributor"}
+            {isGuest ? "Guest" : currentUser.role === "lead_author" ? "Lead Author" : "Contributor"}
           </span>
         </div>
       )}
@@ -112,11 +119,11 @@ function Sidebar({ currentUser, onLogout, collapsed, hidden, onToggleCollapse, o
         })}
       </nav>
 
-      {/* ── Sign out ── */}
+      {/* ── Sign out / Log in ── */}
       <div className="px-3 py-4 border-t border-primary-700/50">
         <button
-          onClick={onLogout}
-          title={collapsed ? "Sign out" : undefined}
+          onClick={isGuest ? () => navigate("/login") : onLogout}
+          title={collapsed ? (isGuest ? "Log in" : "Sign out") : undefined}
           className={`
             w-full flex items-center gap-3
             ${collapsed ? "justify-center" : "justify-start"}
@@ -126,7 +133,7 @@ function Sidebar({ currentUser, onLogout, collapsed, hidden, onToggleCollapse, o
           `}
         >
           <span className="text-base shrink-0">→</span>
-          {!collapsed && "Sign out"}
+          {!collapsed && (isGuest ? "Log in" : "Sign out")}
         </button>
       </div>
     </div>

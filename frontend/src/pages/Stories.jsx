@@ -18,12 +18,15 @@ function Stories() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        client.get("/auth/me")
-            .then(res => setCurrentUser(res.data))
-            .catch(() => {
-                localStorage.removeItem("token")
-                navigate("/login")
-            })
+        if (localStorage.getItem("token")) {
+            client.get("/auth/me")
+                .then(res => setCurrentUser(res.data))
+                .catch(() => {
+                    // Invalid/expired token — fall back to guest browsing
+                    localStorage.removeItem("token")
+                    setCurrentUser(null)
+                })
+        }
 
         client.get("/stories/")
             .then(res => {
@@ -33,9 +36,11 @@ function Stories() {
             .catch(() => setLoading(false))
     }, [])
 
+    const isGuest = !currentUser
+
     function handleLogout() {
         localStorage.removeItem("token")
-        navigate("/login")
+        navigate("/")
     }
 
     async function handleCreateStory(e) {
@@ -70,10 +75,26 @@ function Stories() {
 
             <main className={`${sidebarCollapsed ? "md:ml-20" : "md:ml-56"} ml-0 flex-1 p-8 pt-20 md:pt-0 transition-all duration-300`}>
                 <div className="max-w-4xl mx-auto">
+                    {isGuest && (
+                        <div className="bg-primary-100 border border-primary-200 rounded-2xl px-5 py-4 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <p className="text-primary-800 text-sm">
+                                You're browsing as a <span className="font-semibold">guest</span>. Log in to start writing and contributing.
+                            </p>
+                            <div className="flex gap-2 shrink-0">
+                                <Button size="sm" variant="outline" onClick={() => navigate("/register")}>
+                                    Sign up
+                                </Button>
+                                <Button size="sm" onClick={() => navigate("/login")}>
+                                    Log in
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+
                     <header className="flex justify-between items-center mb-8 pt-6">
                         <div>
                             <h2 className="font-heading text-3xl text-ink-900">
-                                Welcome back, {currentUser?.username} 👋
+                                {isGuest ? "Explore stories 📖" : `Welcome back, ${currentUser?.username} 👋`}
                             </h2>
                             <p className="text-ink-400 text-sm mt-1">
                                 {stories.length} {stories.length === 1 ? "story" : "stories"} available
